@@ -1,4 +1,57 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import type { Workout } from "@/types/workout";
+
 const WorkoutLibrary = () => {
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState("duration");
+
+  // Sort workouts
+  const sortedWorkouts = [...workouts].sort((a, b) => {
+    if (sortBy === "duration") {
+      return a.duration - b.duration;
+    }
+
+    if (sortBy === "calories") {
+      return a.caloriesBurned - b.caloriesBurned;
+    }
+
+    if (sortBy === "rating") {
+      return b.rating - a.rating;
+    }
+
+    return 0;
+  });
+
+  // Fetch workouts from API
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const response = await fetch(
+          "https://api.abcz.workers.dev/api/fitlog"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch workouts");
+        }
+
+        const data = await response.json();
+
+        setWorkouts(data);
+      } catch (error) {
+        console.error("Failed to fetch workouts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkouts();
+  }, []);
+
   return (
     <section
       id="library"
@@ -6,10 +59,9 @@ const WorkoutLibrary = () => {
     >
       <div className="mx-auto max-w-7xl">
 
-       
+        {/* Section Heading */}
         <div className="mb-10">
-            
-            <h2 className="text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
+          <h2 className="text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
             THE LIBRARY
           </h2>
 
@@ -18,115 +70,95 @@ const WorkoutLibrary = () => {
           </p>
         </div>
 
-        
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Sort Dropdown */}
+        <div className="mt-6">
+          <label
+            htmlFor="sort"
+            className="mr-3 text-sm font-semibold text-gray-400"
+          >
+            Sort By:
+          </label>
 
-          
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-[#171b21]">
-            <div className="h-52 bg-[#222831]">
-              <div className="flex h-full items-center justify-center text-sm text-gray-500">
-                Workout Image
-              </div>
-            </div>
-
-            <div className="p-5">
-              <div className="mb-3 flex gap-2">
-                <span className="rounded-full bg-[#ccff00] px-2 py-1 text-[10px] font-black text-black">
-                  CHEST
-                </span>
-
-                <span className="rounded-full bg-[#ccff00] px-2 py-1 text-[10px] font-black text-black">
-                  ARMS
-                </span>
-              </div>
-
-              <h3 className="text-lg font-black uppercase text-white">
-                Barbell Bench Press
-              </h3>
-
-              <p className="mt-1 text-sm text-gray-500">
-                Barbell
-              </p>
-
-              <div className="mt-4 flex gap-4 text-xs text-gray-500">
-                <span>25 min</span>
-                <span>180 kcal</span>
-                <span>★ 4.8</span>
-              </div>
-            </div>
-          </div>
-
-          
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-[#171b21]">
-            <div className="h-52 bg-[#222831]">
-              <div className="flex h-full items-center justify-center text-sm text-gray-500">
-                Workout Image
-              </div>
-            </div>
-
-            <div className="p-5">
-              <div className="mb-3 flex gap-2">
-                <span className="rounded-full bg-[#ccff00] px-2 py-1 text-[10px] font-black text-black">
-                  BACK
-                </span>
-
-                <span className="rounded-full bg-[#ccff00] px-2 py-1 text-[10px] font-black text-black">
-                  ARMS
-                </span>
-              </div>
-
-              <h3 className="text-lg font-black uppercase text-white">
-                Pull-Up
-              </h3>
-
-              <p className="mt-1 text-sm text-gray-500">
-                Bodyweight
-              </p>
-
-              <div className="mt-4 flex gap-4 text-xs text-gray-500">
-                <span>15 min</span>
-                <span>120 kcal</span>
-                <span>★ 4.7</span>
-              </div>
-            </div>
-          </div>
-
-          
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-[#171b21]">
-            <div className="h-52 bg-[#222831]">
-              <div className="flex h-full items-center justify-center text-sm text-gray-500">
-                Workout Image
-              </div>
-            </div>
-
-            <div className="p-5">
-              <div className="mb-3 flex gap-2">
-                <span className="rounded-full bg-[#ccff00] px-2 py-1 text-[10px] font-black text-black">
-                  LEGS
-                </span>
-
-                <span className="rounded-full bg-[#ccff00] px-2 py-1 text-[10px] font-black text-black">
-                  CORE
-                </span>
-              </div>
-
-              <h3 className="text-lg font-black uppercase text-white">
-                Back Squat
-              </h3>
-
-              <p className="mt-1 text-sm text-gray-500">
-                Barbell
-              </p>
-
-              <div className="mt-4 flex gap-4 text-xs text-gray-500">
-                <span>20 min</span>
-                <span>140 kcal</span>
-                <span>★ 4.9</span>
-              </div>
-            </div>
-          </div>
-
+          <select
+            id="sort"
+            value={sortBy}
+            onChange={(event) => setSortBy(event.target.value)}
+            className="rounded-lg border border-white/10 bg-[#171b21] px-4 py-2 text-sm font-semibold text-white outline-none"
+          >
+            <option value="duration">Duration</option>
+            <option value="calories">Calories</option>
+            <option value="rating">Rating</option>
+          </select>
         </div>
+
+        {/* Loading */}
+        {loading && (
+          <div className="flex min-h-40 items-center justify-center">
+            <p className="text-sm font-semibold text-gray-400">
+              Loading workouts...
+            </p>
+          </div>
+        )}
+
+        {/* Workout Cards */}
+        {!loading && (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {sortedWorkouts.map((workout) => (
+              <Link
+                key={workout.id}
+                href={`/workout/${workout.id}`}
+                className="group overflow-hidden rounded-xl border border-white/10 bg-[#171b21] transition duration-300 hover:-translate-y-1 hover:border-[#ccff00]"
+              >
+                {/* Image */}
+                <div className="h-52 bg-[#222831]">
+                  <Image
+                    src={workout.image}
+                    alt={workout.name}
+                    width={600}
+                    height={400}
+                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                  />
+                </div>
+
+                {/* Card Content */}
+                <div className="p-5">
+
+                  {/* Muscle Groups */}
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {workout.muscleGroups.map((muscle) => (
+                      <span
+                        key={muscle}
+                        className="rounded-full bg-[#ccff00] px-2 py-1 text-[10px] font-black uppercase text-black"
+                      >
+                        {muscle}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Workout Name */}
+                  <h3 className="text-lg font-black uppercase text-white">
+                    {workout.name}
+                  </h3>
+
+                  {/* Equipment */}
+                  <p className="mt-1 text-sm text-gray-500">
+                    {workout.equipment}
+                  </p>
+
+                  {/* Stats */}
+                  <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-500">
+                    <span>{workout.duration} min</span>
+
+                    <span>{workout.caloriesBurned} kcal</span>
+
+                    <span>★ {workout.rating}</span>
+                  </div>
+
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
