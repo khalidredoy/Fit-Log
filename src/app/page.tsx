@@ -1,4 +1,6 @@
 import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import WorkoutLibrary from "@/components/WorkoutLibrary";
 
 const Page = () => {
   return (
@@ -6,11 +8,8 @@ const Page = () => {
       <Navbar />
 
       <main>
-        <div className="mx-auto max-w-7xl px-6 py-20">
-          <h1 className="text-4xl font-bold text-white">
-            
-          </h1>
-        </div>
+        <Hero />
+        <WorkoutLibrary />
       </main>
     </>
   );
