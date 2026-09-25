@@ -6,8 +6,6 @@ const Hero = () => {
   return (
     <section className="overflow-hidden border-b border-white/10 bg-black">
       <div className="mx-auto grid min-h-[600px] w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:py-20">
-
-       
         <div className="min-w-0">
           <p className="mb-5 text-sm font-bold tracking-[0.25em] text-[#ccff00]">
             WORKOUT LIBRARY
@@ -20,9 +18,8 @@ const Hero = () => {
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-7 text-gray-400 sm:text-lg">
-            FitLog is a dark, no-nonsense gym companion: pick a lift,
-            lock it into today&apos;s plan, and watch the week&apos;s work
-            add up.
+            FitLog is a dark, no-nonsense gym companion: pick a lift, lock it
+            into today&apos;s plan, and watch the week&apos;s work add up.
           </p>
 
           <Link
@@ -33,7 +30,6 @@ const Hero = () => {
           </Link>
         </div>
 
-       
         <div className="flex min-w-0 w-full justify-center lg:justify-end">
           <Image
             src={banner}
@@ -42,7 +38,6 @@ const Hero = () => {
             className="h-auto w-full max-w-[550px] object-contain"
           />
         </div>
-
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,20 +8,48 @@ import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const pathname = usePathname();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [planCount, setPlanCount] = useState(0);
+  const [savedCount, setSavedCount] = useState(0);
+
+  useEffect(() => {
+    const updateCounts = () => {
+      try {
+        const savedPlan = localStorage.getItem("fitlog-plan");
+        const savedWorkouts = localStorage.getItem("fitlog-saved");
+
+        const plan = savedPlan ? JSON.parse(savedPlan) : [];
+        const saved = savedWorkouts ? JSON.parse(savedWorkouts) : [];
+
+        setPlanCount(plan.length);
+        setSavedCount(saved.length);
+      } catch (error) {
+        console.error("Failed to update navbar counters:", error);
+
+        setPlanCount(0);
+        setSavedCount(0);
+      }
+    };
+
+    updateCounts();
+
+    window.addEventListener("fitlog-storage-update", updateCounts);
+
+    window.addEventListener("storage", updateCounts);
+
+    return () => {
+      window.removeEventListener("fitlog-storage-update", updateCounts);
+
+      window.removeEventListener("storage", updateCounts);
+    };
+  }, []);
 
   return (
     <nav className="w-full border-b border-white/10 bg-black">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-
-      
         <div className="flex min-h-20 w-full items-center">
-
-         
-          <Link
-            href="/"
-            className="flex shrink-0 items-center gap-2"
-          >
+          <Link href="/" className="flex shrink-0 items-center gap-2">
             <Image
               src={logo}
               alt="FitLog Logo"
@@ -35,10 +63,7 @@ const Navbar = () => {
             </span>
           </Link>
 
-          
           <div className="mx-auto hidden items-center gap-6 md:flex lg:gap-10">
-
-           
             <Link
               href="/"
               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
@@ -50,7 +75,6 @@ const Navbar = () => {
               Workouts
             </Link>
 
-            
             <Link
               href="/my-plan"
               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
@@ -61,51 +85,37 @@ const Navbar = () => {
             >
               My Plan
             </Link>
-
           </div>
 
-          
           <div className="ml-6 hidden items-center gap-2 md:flex">
-
-            
             <Link
               href="/my-plan"
               className="rounded-full bg-[#ccff00] px-3 py-2 text-sm font-bold text-black"
             >
-              Plan 0
+              Plan {planCount}
             </Link>
 
-            
             <Link
               href="/my-plan"
               className="rounded-full border border-[#ccff00] px-3 py-2 text-sm font-bold text-[#ccff00]"
             >
-              Saved 0
+              Saved {savedCount}
             </Link>
-
           </div>
 
-         
           <button
             type="button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white md:hidden"
             aria-label="Toggle navigation menu"
           >
-            <span className="text-2xl leading-none">
-              ☰
-            </span>
+            <span className="text-2xl leading-none">☰</span>
           </button>
-
         </div>
 
-       
         {isMenuOpen && (
           <div className="border-t border-white/10 py-4 md:hidden">
-
             <div className="flex flex-col gap-3">
-
-              
               <Link
                 href="/"
                 onClick={() => setIsMenuOpen(false)}
@@ -118,7 +128,6 @@ const Navbar = () => {
                 Workouts
               </Link>
 
-             
               <Link
                 href="/my-plan"
                 onClick={() => setIsMenuOpen(false)}
@@ -131,34 +140,26 @@ const Navbar = () => {
                 My Plan
               </Link>
 
-              
               <div className="flex flex-wrap gap-2 pt-2">
-
-                
                 <Link
                   href="/my-plan"
                   onClick={() => setIsMenuOpen(false)}
                   className="rounded-full bg-[#ccff00] px-4 py-2 text-sm font-bold text-black"
                 >
-                  Plan 0
+                  Plan {planCount}
                 </Link>
 
-               
                 <Link
                   href="/my-plan"
                   onClick={() => setIsMenuOpen(false)}
                   className="rounded-full border border-[#ccff00] px-4 py-2 text-sm font-bold text-[#ccff00]"
                 >
-                  Saved 0
+                  Saved {savedCount}
                 </Link>
-
               </div>
-
             </div>
-
           </div>
         )}
-
       </div>
     </nav>
   );

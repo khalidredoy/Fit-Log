@@ -64,11 +64,8 @@ const WorkoutLibrary = () => {
           </p>
         </div>
 
-        <div className="mt-6">
-          <label
-            htmlFor="sort"
-            className="mr-3 text-sm font-semibold text-gray-400"
-          >
+        <div className="mb-8 flex items-center gap-3">
+          <label htmlFor="sort" className="text-sm font-semibold text-gray-400">
             Sort By:
           </label>
 
@@ -85,7 +82,9 @@ const WorkoutLibrary = () => {
         </div>
 
         {loading && (
-          <div className="flex min-h-40 items-center justify-center">
+          <div className="flex min-h-40 flex-col items-center justify-center gap-4">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/10 border-t-[#ccff00]" />
+
             <p className="text-sm font-semibold text-gray-400">
               Loading workouts...
             </p>
@@ -98,9 +97,9 @@ const WorkoutLibrary = () => {
               <Link
                 key={workout.id}
                 href={`/workout/${workout.id}`}
-                className="group overflow-hidden rounded-xl border border-white/10 bg-[#171b21] transition duration-300 hover:-translate-y-1 hover:border-[#ccff00]"
+                className="group block overflow-hidden rounded-xl border border-white/10 bg-[#171b21] transition duration-300 hover:-translate-y-1 hover:border-[#ccff00]"
               >
-                <div className="h-52 bg-[#222831]">
+                <div className="h-52 overflow-hidden bg-[#222831]">
                   <Image
                     src={workout.image}
                     alt={workout.name}
@@ -122,7 +121,7 @@ const WorkoutLibrary = () => {
                     ))}
                   </div>
 
-                  <h3 className="text-lg font-black uppercase text-white">
+                  <h3 className="text-lg font-black uppercase text-white transition group-hover:text-[#ccff00]">
                     {workout.name}
                   </h3>
 
@@ -140,6 +139,14 @@ const WorkoutLibrary = () => {
                 </div>
               </Link>
             ))}
+          </div>
+        )}
+
+        {!loading && sortedWorkouts.length === 0 && (
+          <div className="flex min-h-40 items-center justify-center">
+            <p className="text-sm font-semibold text-gray-400">
+              No workouts found.
+            </p>
           </div>
         )}
       </div>
