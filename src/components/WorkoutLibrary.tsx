@@ -10,7 +10,6 @@ const WorkoutLibrary = () => {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("duration");
 
-  // Sort workouts
   const sortedWorkouts = [...workouts].sort((a, b) => {
     if (sortBy === "duration") {
       return a.duration - b.duration;
@@ -27,13 +26,10 @@ const WorkoutLibrary = () => {
     return 0;
   });
 
-  // Fetch workouts from API
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const response = await fetch(
-          "https://api.abcz.workers.dev/api/fitlog"
-        );
+        const response = await fetch("https://api.abcz.workers.dev/api/fitlog");
 
         if (!response.ok) {
           throw new Error("Failed to fetch workouts");
@@ -58,8 +54,6 @@ const WorkoutLibrary = () => {
       className="overflow-hidden border-b border-white/10 bg-black px-6 py-20"
     >
       <div className="mx-auto max-w-7xl">
-
-        {/* Section Heading */}
         <div className="mb-10">
           <h2 className="text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
             THE LIBRARY
@@ -70,7 +64,6 @@ const WorkoutLibrary = () => {
           </p>
         </div>
 
-        {/* Sort Dropdown */}
         <div className="mt-6">
           <label
             htmlFor="sort"
@@ -91,7 +84,6 @@ const WorkoutLibrary = () => {
           </select>
         </div>
 
-        {/* Loading */}
         {loading && (
           <div className="flex min-h-40 items-center justify-center">
             <p className="text-sm font-semibold text-gray-400">
@@ -100,7 +92,6 @@ const WorkoutLibrary = () => {
           </div>
         )}
 
-        {/* Workout Cards */}
         {!loading && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sortedWorkouts.map((workout) => (
@@ -109,7 +100,6 @@ const WorkoutLibrary = () => {
                 href={`/workout/${workout.id}`}
                 className="group overflow-hidden rounded-xl border border-white/10 bg-[#171b21] transition duration-300 hover:-translate-y-1 hover:border-[#ccff00]"
               >
-                {/* Image */}
                 <div className="h-52 bg-[#222831]">
                   <Image
                     src={workout.image}
@@ -120,10 +110,7 @@ const WorkoutLibrary = () => {
                   />
                 </div>
 
-                {/* Card Content */}
                 <div className="p-5">
-
-                  {/* Muscle Groups */}
                   <div className="mb-3 flex flex-wrap gap-2">
                     {workout.muscleGroups.map((muscle) => (
                       <span
@@ -135,17 +122,14 @@ const WorkoutLibrary = () => {
                     ))}
                   </div>
 
-                  {/* Workout Name */}
                   <h3 className="text-lg font-black uppercase text-white">
                     {workout.name}
                   </h3>
 
-                  {/* Equipment */}
                   <p className="mt-1 text-sm text-gray-500">
                     {workout.equipment}
                   </p>
 
-                  {/* Stats */}
                   <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-500">
                     <span>{workout.duration} min</span>
 
@@ -153,7 +137,6 @@ const WorkoutLibrary = () => {
 
                     <span>★ {workout.rating}</span>
                   </div>
-
                 </div>
               </Link>
             ))}
